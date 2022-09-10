@@ -28,7 +28,7 @@ func NewUserStorage(session *session.Session, timeout time.Duration) UserStorage
 	}
 }
 
-func (u UserStorage) Insert(ctx context.Context, user storage.User) error {
+func (u UserStorage) Put(ctx context.Context, user storage.User) error {
 	ctx, cancel := context.WithTimeout(ctx, u.timeout)
 	defer cancel()
 
@@ -41,10 +41,6 @@ func (u UserStorage) Insert(ctx context.Context, user storage.User) error {
 	input := &dynamodb.PutItemInput{
 		TableName: aws.String("users"),
 		Item:      item,
-		ExpressionAttributeNames: map[string]*string{
-			"#username": aws.String("username"),
-		},
-		ConditionExpression: aws.String("attribute_not_exists(#username)"),
 	}
 
 	if _, err := u.client.PutItemWithContext(ctx, input); err != nil {

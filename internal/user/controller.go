@@ -21,13 +21,13 @@ func (c Controller) Hello(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		c.find(w, r)
 	case http.MethodPut:
-		c.create(w, r)
+		c.put(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
 
-func (c Controller) create(w http.ResponseWriter, r *http.Request) {
+func (c Controller) put(w http.ResponseWriter, r *http.Request) {
 	var req User
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -36,7 +36,7 @@ func (c Controller) create(w http.ResponseWriter, r *http.Request) {
 
 	id := uuid.New().String()
 
-	err := c.Storage.Insert(r.Context(), storage.User{
+	err := c.Storage.Put(r.Context(), storage.User{
 		Username:    strings.TrimPrefix(r.URL.Path, "/hello/"),
 		DateOfBirth: req.DateOfBirth,
 	})

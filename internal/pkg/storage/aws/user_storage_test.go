@@ -19,6 +19,8 @@ import (
 var svc dynamodbiface.DynamoDBAPI
 var userStorage UserStorage
 
+var createdTableOutput *dynamodb.CreateTableOutput
+
 // the TestMain functions runs before any test
 func TestMain(m *testing.M) {
 	// get a context for our request
@@ -70,44 +72,48 @@ func TestMain(m *testing.M) {
 	svc = dynamodb.New(sess)
 
 	userStorage = NewUserStorage(sess, time.Second*5)
+
+	table := "users"
+
+	if createdTableOutput == nil {
+		createdTableOutput, err = svc.CreateTable(&dynamodb.CreateTableInput{
+			AttributeDefinitions: []*dynamodb.AttributeDefinition{
+				{
+					AttributeName: aws.String("username"),
+					AttributeType: aws.String("S"),
+				},
+			},
+			BillingMode:            nil,
+			GlobalSecondaryIndexes: nil,
+			KeySchema: []*dynamodb.KeySchemaElement{
+				{
+					AttributeName: aws.String("username"),
+					KeyType:       aws.String(dynamodb.KeyTypeHash),
+				},
+			},
+			LocalSecondaryIndexes: nil,
+			ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
+				ReadCapacityUnits:  aws.Int64(1),
+				WriteCapacityUnits: aws.Int64(1),
+			},
+			SSESpecification:    nil,
+			StreamSpecification: nil,
+			TableName:           aws.String(table),
+			Tags:                nil,
+		})
+
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	// run the tests
 	os.Exit(m.Run())
 }
 
 func TestInsert(t *testing.T) {
-	table := "users"
-
-	_, err := svc.CreateTable(&dynamodb.CreateTableInput{
-		AttributeDefinitions: []*dynamodb.AttributeDefinition{
-			{
-				AttributeName: aws.String("username"),
-				AttributeType: aws.String("S"),
-			},
-		},
-		BillingMode:            nil,
-		GlobalSecondaryIndexes: nil,
-		KeySchema: []*dynamodb.KeySchemaElement{
-			{
-				AttributeName: aws.String("username"),
-				KeyType:       aws.String(dynamodb.KeyTypeHash),
-			},
-		},
-		LocalSecondaryIndexes: nil,
-		ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
-			ReadCapacityUnits:  aws.Int64(1),
-			WriteCapacityUnits: aws.Int64(1),
-		},
-		SSESpecification:    nil,
-		StreamSpecification: nil,
-		TableName:           aws.String(table),
-		Tags:                nil,
-	})
-
-	if err != nil {
-		t.Fatalf("could not create table: %s", err.Error())
-	}
 	insertedUser := storage.User{Username: "Mike", DateOfBirth: time.Date(2020, 3, 2, 12, 14, 07, 0, time.UTC)}
-	err = userStorage.Insert(context.Background(), insertedUser)
+	err := userStorage.Put(context.Background(), insertedUser)
 
 	if err != nil {
 		t.Fatalf("could not insert: %s", err.Error())
@@ -120,5 +126,27 @@ func TestInsert(t *testing.T) {
 
 	if !insertedUser.DateOfBirth.Equal(u.DateOfBirth) {
 		t.Fatalf("output \"%s\" is wrong! Should be \"%s\" instead.", u, insertedUser)
+	}
+}
+
+func TestUpdate(t *testing.T) {
+
+	user := storage.User{Username: "Eva", DateOfBirth: time.Date(2020, 3, 2, 12, 14, 07, 0, time.UTC)}
+	if err := userStorage.Put(context.Background(), user); err != nil {
+		t.Fatalf("could not insert: %s", err.Error())
+	}
+
+	user = storage.User{Username: "Eva", DateOfBirth: time.Date(2020, 7, 7, 12, 14, 07, 0, time.UTC)}
+	if err := userStorage.Put(context.Background(), user); err != nil {
+		t.Fatalf("could not update: %s", err.Error())
+	}
+
+	expectedUser, err := userStorage.Find(context.Background(), user.Username)
+	if err != nil {
+		t.Fatalf("could not find: %s", err.Error())
+	}
+
+	if !user.DateOfBirth.Equal(expectedUser.DateOfBirth) {
+		t.Fatalf("output \"%s\" is wrong! Should be \"%s\" instead.", expectedUser, user)
 	}
 }

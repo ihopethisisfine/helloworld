@@ -11,6 +11,6 @@ type User struct {
 }
 
 type UserStorer interface {
-	Insert(ctx context.Context, user User) error
+	Put(ctx context.Context, user User) error
 	Find(ctx context.Context, username string) (User, error)
 }
