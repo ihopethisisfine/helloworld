@@ -36,6 +36,9 @@ func main() {
 	// Instantiate HTTP router
 	rtr := http.NewServeMux()
 	rtr.HandleFunc("/hello/", usr.Hello)
+	rtr.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte("ok"))
+	})
 
 	// Start HTTP server
 	addr := ":8080"
