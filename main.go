@@ -32,5 +32,7 @@ func main() {
 	rtr.HandleFunc("/hello/", usr.Hello)
 
 	// Start HTTP server
-	log.Fatalln(http.ListenAndServe(":8080", rtr))
+	addr := ":8080"
+	log.Println("listen on", addr)
+	log.Fatalln(http.ListenAndServe(addr, rtr))
 }

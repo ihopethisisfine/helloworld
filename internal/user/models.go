@@ -1,7 +1,9 @@
 package user
 
-import "time"
-
 type User struct {
-	DateOfBirth time.Time `json:"dateOfBirth"`
+	DateOfBirth string `json:"dateOfBirth"`
+}
+
+type Response struct {
+	Message string `json:"message"`
 }

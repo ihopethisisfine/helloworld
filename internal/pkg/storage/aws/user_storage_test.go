@@ -112,7 +112,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestInsert(t *testing.T) {
-	insertedUser := storage.User{Username: "Mike", DateOfBirth: time.Date(2020, 3, 2, 12, 14, 07, 0, time.UTC)}
+	insertedUser := storage.User{Username: "Mike", DateOfBirth: "2020-12-02"}
 	err := userStorage.Put(context.Background(), insertedUser)
 
 	if err != nil {
@@ -124,19 +124,19 @@ func TestInsert(t *testing.T) {
 		t.Fatalf("could not find: %s", err.Error())
 	}
 
-	if !insertedUser.DateOfBirth.Equal(u.DateOfBirth) {
+	if insertedUser.DateOfBirth != u.DateOfBirth {
 		t.Fatalf("output \"%s\" is wrong! Should be \"%s\" instead.", u, insertedUser)
 	}
 }
 
 func TestUpdate(t *testing.T) {
 
-	user := storage.User{Username: "Eva", DateOfBirth: time.Date(2020, 3, 2, 12, 14, 07, 0, time.UTC)}
+	user := storage.User{Username: "Eva", DateOfBirth: "2020-03-02"}
 	if err := userStorage.Put(context.Background(), user); err != nil {
 		t.Fatalf("could not insert: %s", err.Error())
 	}
 
-	user = storage.User{Username: "Eva", DateOfBirth: time.Date(2020, 7, 7, 12, 14, 07, 0, time.UTC)}
+	user = storage.User{Username: "Eva", DateOfBirth: "2020-07-03"}
 	if err := userStorage.Put(context.Background(), user); err != nil {
 		t.Fatalf("could not update: %s", err.Error())
 	}
@@ -146,7 +146,7 @@ func TestUpdate(t *testing.T) {
 		t.Fatalf("could not find: %s", err.Error())
 	}
 
-	if !user.DateOfBirth.Equal(expectedUser.DateOfBirth) {
+	if user.DateOfBirth != expectedUser.DateOfBirth {
 		t.Fatalf("output \"%s\" is wrong! Should be \"%s\" instead.", expectedUser, user)
 	}
 }

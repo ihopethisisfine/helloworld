@@ -45,11 +45,6 @@ func (u UserStorage) Put(ctx context.Context, user storage.User) error {
 
 	if _, err := u.client.PutItemWithContext(ctx, input); err != nil {
 		log.Println(err)
-
-		if _, ok := err.(*dynamodb.ConditionalCheckFailedException); ok {
-			return domain.ErrConflict
-		}
-
 		return domain.ErrInternal
 	}
 
