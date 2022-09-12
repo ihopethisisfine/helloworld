@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/ihopethisisfine/helloworld/internal/pkg/storage/aws"
@@ -11,13 +12,18 @@ import (
 
 func main() {
 	// Create a session instance.
-	ses, err := aws.New(aws.Config{
-		Address: "http://localhost:4566",
-		Region:  "eu-west-1",
-		Profile: "localstack",
-		ID:      "test",
-		Secret:  "test",
-	})
+	var config *aws.Config
+	if len(os.Getenv("DYNAMODB_ENDPOINT")) > 0 {
+		config = &aws.Config{
+			Address: os.Getenv("DYNAMODB_ENDPOINT"),
+			Region:  "eu-west-1",
+			Profile: "localdynamo",
+			ID:      "test",
+			Secret:  "test",
+		}
+	}
+	ses, err := aws.New(config)
+
 	if err != nil {
 		log.Fatalln(err)
 	}
