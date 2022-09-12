@@ -14,16 +14,19 @@ type Config struct {
 	Secret  string
 }
 
-func New(config Config) (*session.Session, error) {
-	return session.NewSessionWithOptions(
-		session.Options{
-			Config: aws.Config{
-				Credentials:      credentials.NewStaticCredentials(config.ID, config.Secret, ""),
-				Region:           aws.String(config.Region),
-				Endpoint:         aws.String(config.Address),
-				S3ForcePathStyle: aws.Bool(true),
+func New(config *Config) (*session.Session, error) {
+	if config == nil {
+		return session.NewSession()
+	} else {
+		return session.NewSessionWithOptions(
+			session.Options{
+				Config: aws.Config{
+					Credentials: credentials.NewStaticCredentials(config.ID, config.Secret, ""),
+					Region:      aws.String(config.Region),
+					Endpoint:    aws.String(config.Address),
+				},
+				Profile: config.Profile,
 			},
-			Profile: config.Profile,
-		},
-	)
+		)
+	}
 }
