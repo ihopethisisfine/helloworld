@@ -1,4 +1,5 @@
 IMAGE_NAME := "helloworld"
+IMAGE_TAG  := "latest"
 
 .PHONY: build
 build:
@@ -18,7 +19,7 @@ clean:
 
 .PHONY: docker-build
 docker-build:
-	@docker build -f Dockerfile -t $(IMAGE_NAME) .
+	@docker build -f Dockerfile -t $(IMAGE_NAME):$(IMAGE_TAG) .
 
 .PHONY: docker-run
 docker-run:
@@ -27,19 +28,22 @@ docker-run:
 .PHONY: docker-up
 docker-up: docker-build docker-run
 
-.PHONY: minikube-setup
-minikube-setup:
-	@which minikube || (echo Please install Minikube; exit 1)
-	@minikube ip 2>&1 || ( \
-		echo "Starting up Minikube"; \
-		minikube start \
-	)
-	@minikube image load $(IMAGE_NAME)
+.PHONY: docker-push
+docker-push:
+	@docker push $(IMAGE_NAME):$(IMAGE_TAG)
 
 .PHONY: deploy
 deploy:
-	@helm upgrade --install helloworld deploy/helloworld --values deploy/helloworld/values.yaml
+	@helm upgrade --install helloworld charts/helloworld --values deploy/helloworld/values.yaml
 
 .PHONY: deploy-test
 deploy-test:
 	@helm test helloworld
+
+.PHONY: compose-up
+compose-up:
+	@docker-compose up -d
+
+.PHONY: compose-down
+compose-down:
+	@docker-compose down
