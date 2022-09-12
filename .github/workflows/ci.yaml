@@ -11,10 +11,9 @@ env:
   HELM_VERSION: v3.8.0
 
 jobs:
+  #TODO Run go tests
   docker:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write  # to push docker images
     steps:
       - name: Checkout
         uses: actions/checkout@v3
