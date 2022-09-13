@@ -34,4 +34,22 @@ spec:
     targetPort: 8000
   selector:
     app: dynamodb
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dynamodb-table-create
+spec:
+  activeDeadlineSeconds: 30
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      name: dynamodb-table-create
+    spec:
+    image: amazon/aws-cli
+      - name: dynamodb-table-create
+        image: amazon/aws-cli
+        command: ["/bin/bash", "-c", "aws dynamodb create-table --table-name users --attribute-definitions AttributeName=username,AttributeType=S --key-schema AttributeName=username,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --table-class STANDARD --endpoint-url http://dynamodb:8000"]
+      restartPolicy: Never
 {{- end }}

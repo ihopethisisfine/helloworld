@@ -8,9 +8,6 @@ services:
       - 8000:8000
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ."
   dynamoSeeder:
-    working_dir: /home/ohell/server/src/migrations/
-    volumes:
-      - ./:/home/ohell/server
     entrypoint: ["/bin/bash"]
     command: -c "aws dynamodb create-table --table-name users --attribute-definitions AttributeName=username,AttributeType=S --key-schema AttributeName=username,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --table-class STANDARD --endpoint-url http://dynamodb:8000"
     image: amazon/aws-cli
