@@ -37,6 +37,9 @@ spec:
 ---
 apiVersion: batch/v1
 kind: Job
+annotations:
+    # Run this after the upgrade
+    "helm.sh/hook": post-upgrade
 metadata:
   name: dynamodb-table-create
 spec:
