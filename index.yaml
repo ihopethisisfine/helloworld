@@ -3,6 +3,16 @@ entries:
   helloworld:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2022-09-13T01:43:13.030694072Z"
+    description: A Helm chart to deploy helloworld in Kubernetes
+    digest: 19691ffe702f28c85436342609c64fe967aa7275db671a6c1e096789b23a44bc
+    name: helloworld
+    type: application
+    urls:
+    - https://github.com/ihopethisisfine/helloworld/releases/download/helloworld-0.0.5/helloworld-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2022-09-13T01:11:57.295737234Z"
     description: A Helm chart to deploy helloworld in Kubernetes
     digest: 4058bcb18bd9e857c4e88fed1574498519b0302ecf450b519f009baef50773b7
@@ -41,4 +51,4 @@ entries:
     urls:
     - https://github.com/ihopethisisfine/helloworld/releases/download/helloworld-0.0.1/helloworld-0.0.1.tgz
     version: 0.0.1
-generated: "2022-09-13T01:11:57.295753034Z"
+generated: "2022-09-13T01:43:13.030713672Z"
