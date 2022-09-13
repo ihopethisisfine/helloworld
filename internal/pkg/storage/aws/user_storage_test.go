@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
@@ -65,8 +66,9 @@ func TestMain(m *testing.M) {
 	// create a new session with custom endpoint
 	// need to specify a region, otherwise there's a fatal error
 	sess := session.Must(session.NewSession(&aws.Config{
-		Endpoint: aws.String(fmt.Sprintf("http://%s:%s", ip, port)),
-		Region:   aws.String("eu-central-1"),
+		Endpoint:    aws.String(fmt.Sprintf("http://%s:%s", ip, port)),
+		Region:      aws.String("eu-west-1"),
+		Credentials: credentials.NewStaticCredentials("smth", "smth", ""),
 	}))
 
 	svc = dynamodb.New(sess)
