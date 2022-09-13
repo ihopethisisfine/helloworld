@@ -18,6 +18,7 @@ spec:
     spec:
       containers:
       - image: amazon/dynamodb-local
+        args: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-dbPath", "."]
         name: dynamodb-local
         ports:
         - containerPort: 8000
@@ -37,22 +38,30 @@ spec:
 ---
 apiVersion: batch/v1
 kind: Job
-annotations:
-    # Run this after the upgrade
-    "helm.sh/hook": post-upgrade
 metadata:
   name: dynamodb-table-create
+  annotations:
+    # Run this after the install
+    "helm.sh/hook": post-install
 spec:
   activeDeadlineSeconds: 30
   completions: 1
   parallelism: 1
+  backoffLimit: 10
   template:
     metadata:
       name: dynamodb-table-create
     spec:
-    image: amazon/aws-cli
+      containers:
       - name: dynamodb-table-create
         image: amazon/aws-cli
         command: ["/bin/bash", "-c", "aws dynamodb create-table --table-name users --attribute-definitions AttributeName=username,AttributeType=S --key-schema AttributeName=username,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --table-class STANDARD --endpoint-url http://dynamodb:8000"]
-      restartPolicy: Never
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            value: something
+          - name: AWS_SECRET_ACCESS_KEY
+            value: something
+          - name: AWS_REGION
+            value: us-east-1
+      restartPolicy: OnFailure
 {{- end }}
