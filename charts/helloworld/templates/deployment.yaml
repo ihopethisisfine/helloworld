@@ -33,6 +33,11 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.localDynamodb.enable }}
+          env:
+            - name: DYNAMODB_ENDPOINT
+              value: http://dynamodb:8000
+          {{- end }}
           ports:
             - name: http
               containerPort: 8080

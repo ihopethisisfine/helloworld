@@ -1,0 +1,37 @@
+{{- if .Values.localDynamodb.enable -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dynamodb
+    helm.sh/chart: {{ include "helloworld.chart" . }}
+  name: dynamodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dynamodb
+  template:
+    metadata:
+      labels:
+        app: dynamodb
+    spec:
+      containers:
+      - image: amazon/dynamodb-local
+        name: dynamodb-local
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: dynamodb
+  name: dynamodb
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+  selector:
+    app: dynamodb
+{{- end }}
