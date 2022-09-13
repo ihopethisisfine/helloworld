@@ -53,17 +53,16 @@ To run the docker containers for this repository with docker-compose you just ne
 
 1. Run `make compose-up` to launch the api and a docker container running dynamodb.
 2. Test it with `curl localhost:8080/hello/asd -Lv -XPUT -d "{ \"dateOfBirth\": \"2020-02-29\" }"`
-3. Run `make compose-down` when you're done
+3. Run `make compose-down` when you're done.
 
 ### Helm chart with minikube
 
 This repo contains a helm chart that can be deployed into minikube for local testing on a kubernetes cluster. 
 By default, using the available makefile it will also launch a dynamodb container on the same cluster.
 
-1. Run `make docker-build`, to build the docker image.
-2. Run `make minikube-setup`, to start minikube and load the docker image from previous step.
-3. Run `make deploy-chart`, to deploy the server and a reverse proxy to minikube using helm. After that you can also run `minikube service helloworld` to get a url to test the application.
-4. (optional) Run `make deploy-test` to run an connection test with helm.
+1. Run `make minikube-setup`, to start minikube and load the docker image from previous step.
+2. Run `make deploy-chart`, to deploy the API and dependencies to minikube using helm. After that you can also run `minikube service helloworld` to get a url to test the application.
+3. (optional) Run `make deploy-test` to run an connection test with helm.
 
 ### Unit/Integration Tests
 
