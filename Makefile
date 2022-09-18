@@ -48,7 +48,13 @@ minikube-setup: ## Sets up minikube
 deploy-chart: ## Deploys latest helm chart published version using localDynamoDB by default
 	@helm repo add helloworld https://ihopethisisfine.github.io/helloworld
 	@helm repo update helloworld
-	@helm upgrade --install helloworld helloworld/helloworld --set localDynamodb.enable=true 
+	@helm upgrade --install helloworld helloworld/helloworld --set localDynamodb.enable=true
+
+.PHONY: deploy-prod-chart
+deploy-prod-chart: ## Deploys latest helm chart published with the latest published docker image (assumes it is running on CI)
+	@helm repo add helloworld https://ihopethisisfine.github.io/helloworld
+	@helm repo update helloworld
+	@helm upgrade --install helloworld helloworld/helloworld --set image.tag=${GITHUB_SHA} --set serviceAccount.create=true --set serviceAccount.name=helloworld --set ingress.enabled=true
 
 .PHONY: deploy-local-chart
 deploy-local-chart: ## Deploys helm chart with local changes using localDynamoDB by default

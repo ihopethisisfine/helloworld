@@ -8,8 +8,18 @@ The overall architecture to have this service deployed on AWS would look look th
 ![Architecture](./docs/architecture.png)
 
 The application would be deployed on a kubernetes cluster on AWS (EKS) using the helm chart available on this repo. Inside the cluster, the pods will be autoscaled by an horizontal pod autoscaler and will be associated with a kubernetes service, in order to have incoming traffic.
-The pods would interact with a table called `users` on DynamoDB. 
+The pods would interact with a table called `users` on DynamoDB.
 To have traffic coming to the application we would need an Application Load Balancer and a Route53 record pointing to it.
+
+## Terraform
+
+The terraform code that creates the required infrastructure to deploy the helloworld service is under the `terraform` folder.
+It uses popular terraform modules such as [terraform blueprints](https://github.com/aws-ia/terraform-aws-eks-blueprints) and [aws vpc module](https://github.com/terraform-aws-modules/terraform-aws-vpc) and the plan/apply is executed on github actions.
+The plan runs for every Pull Request and is shown as a comment on the PR so it can be reviewed and then applied after it is merged.
+
+### ⚠️⚠️ Disclaimer ⚠️⚠️
+The Terraform code was not tested 100% because the AWS account I used to do this exercise got suspended automatically by AWS and support (since I was creating/destroying resources multiple times and they detected suspicious activity). They didn't unblock it during the weekend and therefore I was not able to run the final apply.
+
 
 ## Artifacts
 
@@ -21,7 +31,7 @@ A docker image tagged with `latest` is pushed when a PR is merged to the main br
 
 ### Helm chart
 
-A helm chart to install this application to a kubernetes cluster is available at https://ihopethisisfine.github.io/helloworld. 
+A helm chart to install this application to a kubernetes cluster is available at https://ihopethisisfine.github.io/helloworld.
 It can be easily installed running `make deploy-chart` or running these:
 ```
 helm repo add helloworld https://ihopethisisfine.github.io/helloworld
@@ -57,7 +67,7 @@ To run the docker containers for this repository with docker-compose you just ne
 
 ### Helm chart with minikube
 
-This repo contains a helm chart that can be deployed into minikube for local testing on a kubernetes cluster. 
+This repo contains a helm chart that can be deployed into minikube for local testing on a kubernetes cluster.
 By default, using the available makefile it will also launch a dynamodb container on the same cluster.
 
 1. Run `make minikube-setup`, to start minikube and load the docker image from previous step.
@@ -68,10 +78,3 @@ By default, using the available makefile it will also launch a dynamodb containe
 
 This repo contains unit and integration tests that can be executed by running `make test`.
 The tests on the persistence layer requires `docker` to be installed since it is using [testcontainers](https://golang.testcontainers.org/).
-
-## Next Steps:
-* Terraform
-    * Create EKS cluster using [terraform blueprints](https://github.com/aws-ia/terraform-aws-eks-blueprints)
-    * Create dynamodb table
-    * Create ServiceAccount and IAM Role to access the dynamoDB
-* Configure GHA workflow to plan/apply the AWS resources with terraform

@@ -44,7 +44,7 @@ ingress:
   className: ""
   annotations: {}
 
-resources: 
+resources:
   limits:
     memory: 128Mi
   requests:
@@ -65,4 +65,3 @@ affinity: {}
 
 localDynamodb:
   enable: false
-

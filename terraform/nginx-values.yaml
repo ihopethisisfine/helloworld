@@ -1,0 +1,21 @@
+controller:
+  service:
+    type: LoadBalancer
+    externalTrafficPolicy: "Local"
+    annotations:
+      # AWS Load Balancer Controller Annotations
+      service.beta.kubernetes.io/aws-load-balancer-type: external
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+
+      # SSL Annotations (not enabled for now)
+      #service.beta.kubernetes.io/aws-load-balancer-ssl-cert:
+      #service.beta.kubernetes.io/aws-load-balancer-ssl-ports: '443'
+
+      # External DNS Annotations
+      external-dns.alpha.kubernetes.io/hostname: ${hostname}
+
+    targetPorts:
+      http: http
+      https: http

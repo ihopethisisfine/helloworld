@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.19.1 
+ARG GO_VERSION=1.19.1
 FROM public.ecr.aws/docker/library/golang:${GO_VERSION}-alpine AS build
 
 WORKDIR /go/src/helloworld
@@ -12,7 +12,7 @@ RUN CGO_ENABLED=0 go build \
    -o /helloworld
 
 FROM scratch
- 
+
 COPY --from=build /helloworld /helloworld
- 
+
 ENTRYPOINT ["/helloworld"]
