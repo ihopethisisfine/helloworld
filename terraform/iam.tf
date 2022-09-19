@@ -3,7 +3,7 @@ locals {
 }
 
 #Role to be assumed by helloworld's service account
-resource "aws_iam_role" "irsa" {
+resource "aws_iam_role" "helloworld" {
   name = local.name
   assume_role_policy = jsonencode({
     Statement = [{
@@ -22,8 +22,14 @@ resource "aws_iam_role" "irsa" {
   })
 }
 
+resource "aws_iam_role_policy" "dynamodb_access_policy" {
+  name = "dynamodb_access"
+  role = aws_iam_role.helloworld.id
 
-data "aws_iam_policy_document" "hello" {
+  policy = data.aws_iam_policy_document.dynamodb_access.json
+}
+
+data "aws_iam_policy_document" "dynamodb_access" {
   statement {
     sid       = "ListAndDescribe"
     effect    = "Allow"

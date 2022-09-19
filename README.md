@@ -9,7 +9,7 @@ The overall architecture to have this service deployed on AWS would look look th
 
 The application runs on a kubernetes cluster on AWS (EKS) using the helm chart available on this repo. Inside the cluster, the pods will be autoscaled by an horizontal pod autoscaler (for now is configured to scale up just based on cpu by default) and is associated with a kubernetes service, in order to have incoming traffic. An Ingress resource is also available on the helm chart to be enabled. 
 An NGINX Ingress Controller will also be running on the cluster to configure a Load Balancer that will route traffic into the kubernetes cluster. An [external dns](https://github.com/kubernetes-sigs/external-dns) controller will also be deployed in the cluster to update the route53 record with the Load Balancer URL automatically.
-On the backend, the `helloworld` pods will interact with a table called `users` on DynamoDB.
+On the backend, the `helloworld` pods will interact with a table called `users` on DynamoDB. The permissions for the service to interact with the DynamodDB table are provided through a kubernetes ServiceAccount that is associated with a IAM Role that has permissions to store and retrieve items from the table. With the ServiceAccount, the service pods will be able to assume this role.
 
 ## Network Architecture
 

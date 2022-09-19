@@ -37,6 +37,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: Terraform Plan
         id: plan
+        working-directory: ./terraform
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color -input=false
         continue-on-error: true
@@ -73,6 +74,7 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
       - name: Terraform Apply
+        working-directory: ./terraform
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
 
