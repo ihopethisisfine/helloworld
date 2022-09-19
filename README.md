@@ -2,6 +2,7 @@
 
 Basic API written in golang that stores users with a username and date of birth and calculates the number of days until next birthday.
 
+
 ## Service Architecture
 
 The overall architecture to of this service deployed on AWS:
