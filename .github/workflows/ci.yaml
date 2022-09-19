@@ -38,12 +38,12 @@ jobs:
       - name: Terraform Plan
         id: plan
         working-directory: ./terraform
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' }}
         run: terraform plan -no-color -input=false
         continue-on-error: true
       - name: Update Pull Request
         uses: actions/github-script@v6
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' }}
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
@@ -71,11 +71,11 @@ jobs:
               body: output
             })
       - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
+        if: ${{ steps.plan.outcome == 'failure' }}
         run: exit 1
       - name: Terraform Apply
         working-directory: ./terraform
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
         run: terraform apply -auto-approve -input=false
 
   docker:
@@ -104,7 +104,7 @@ jobs:
             ghcr.io/ihopethisisfine/helloworld:${{ github.sha }}
       - name: Build and push latest
         uses: docker/build-push-action@v3
-        if: github.ref == 'refs/heads/main'
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -152,6 +152,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name helloworld --region env.AWS_REGION
+        run: aws eks update-kubeconfig --name helloworld --region ${{ env.AWS_REGION }}
       - name: Helm update
         run: make deploy-prod-chart
