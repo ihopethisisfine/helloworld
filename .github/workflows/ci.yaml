@@ -152,6 +152,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name helloworld --region ${{ env.AWS_REGION }}
+        run: aws eks update-kubeconfig --name helloworld
       - name: Helm update
         run: make deploy-prod-chart
