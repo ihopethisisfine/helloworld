@@ -4,7 +4,7 @@ Basic API written in golang that stores users with a username and date of birth 
 
 ## Service Architecture
 
-The overall architecture to of this service deployed on AWS:
+The overall architecture for this service, deployed on AWS:
 ![Architecture](./docs/architecture.png)
 
 The application runs on a kubernetes cluster on AWS (EKS) using the helm chart available on this repo. Inside the cluster, the pods will be autoscaled by an horizontal pod autoscaler (for now is configured to scale up just based on cpu by default) and is associated with a kubernetes service, in order to have incoming traffic. An Ingress resource is also available on the helm chart to be enabled. 
