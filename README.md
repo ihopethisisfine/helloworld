@@ -2,14 +2,17 @@
 
 Basic API written in golang that stores users with a username and date of birth and calculates the number of days until next birthday.
 
-## Architecture
+## Service Architecture
 
 The overall architecture to have this service deployed on AWS would look look this:
 ![Architecture](./docs/architecture.png)
 
-The application would be deployed on a kubernetes cluster on AWS (EKS) using the helm chart available on this repo. Inside the cluster, the pods will be autoscaled by an horizontal pod autoscaler and will be associated with a kubernetes service, in order to have incoming traffic.
-The pods would interact with a table called `users` on DynamoDB.
-To have traffic coming to the application we would need an Application Load Balancer and a Route53 record pointing to it.
+The application runs on a kubernetes cluster on AWS (EKS) using the helm chart available on this repo. Inside the cluster, the pods will be autoscaled by an horizontal pod autoscaler (for now is configured to scale up just based on cpu by default) and is associated with a kubernetes service, in order to have incoming traffic. An Ingress resource is also available on the helm chart to be enabled. 
+An NGINX Ingress Controller will also be running on the cluster to configure a Load Balancer that will route traffic into the kubernetes cluster. An [external dns](https://github.com/kubernetes-sigs/external-dns) controller will also be deployed in the cluster to update the route53 record with the Load Balancer URL automatically.
+On the backend, the `helloworld` pods will interact with a table called `users` on DynamoDB.
+
+## Network Architecture
+
 
 ## Terraform
 
