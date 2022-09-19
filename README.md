@@ -4,7 +4,7 @@ Basic API written in golang that stores users with a username and date of birth 
 
 ## Service Architecture
 
-The overall architecture to have this service deployed on AWS would look look this:
+The overall architecture to of this service deployed on AWS:
 ![Architecture](./docs/architecture.png)
 
 The application runs on a kubernetes cluster on AWS (EKS) using the helm chart available on this repo. Inside the cluster, the pods will be autoscaled by an horizontal pod autoscaler (for now is configured to scale up just based on cpu by default) and is associated with a kubernetes service, in order to have incoming traffic. An Ingress resource is also available on the helm chart to be enabled. 
@@ -13,6 +13,10 @@ On the backend, the `helloworld` pods will interact with a table called `users` 
 
 ## Network Architecture
 
+The network architecture for this service:
+![Architecture](./docs/network-architecture.png)
+
+The service will be running on a managed node group running across 3 private subnets across 3 different azs. The communication with DynamoDB will be done through a vpc endpoint for better security and less cost. The Load balancer will be on a public subnet and then the outbount will go through a Nat Gateway since the spot instances are running on private subnets.
 
 ## Terraform
 
