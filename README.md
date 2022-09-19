@@ -72,6 +72,7 @@ To run the docker containers for this repository with docker-compose you just ne
 2. Test it with `curl localhost:8080/hello/asd -Lv -XPUT -d "{ \"dateOfBirth\": \"2020-02-29\" }"`
 3. Run `make compose-down` when you're done.
 
+
 ### Helm chart with minikube
 
 This repo contains a helm chart that can be deployed into minikube for local testing on a kubernetes cluster.
